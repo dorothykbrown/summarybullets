@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from summarybullets import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('generate-summary/', views.generate_summary),
+    path('summaries/', views.summaries),
+    path('summaries/<int:pk>/', views.summary_detail)
 ]

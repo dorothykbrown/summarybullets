@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import Text, Summary, BulletPoint
+from .models import Summary
 
-admin.site.register([BulletPoint, Text, Summary])
+admin.site.register(Summary)
