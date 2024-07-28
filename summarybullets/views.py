@@ -15,51 +15,49 @@ def generate_summary(request):
     original_text = request.data
     summary_data = get_text_summary_data(original_text)
 
-    summary_serializer = SummarySerializer(data=summary_data)
-    if summary_serializer.is_valid():
-        summary_serializer.save()
-        return Response(summary_serializer.data, status=status.HTTP_201_CREATED)
-    return JsonResponse(summary_serializer.data)
+    serializer = SummarySerializer(data=summary_data)
 
-def summary_detail(request, pk):
-    '''Returns summary'''
-
-    try:
-        summary = Summary.objects.get(pk=pk)
-    except Summary.DoesNotExist:
-        return HttpResponse(status=404)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    if request.method == 'GET':
-        serializer = SummarySerializer(summary)
-        return JsonResponse(serializer.data)
+    return JsonResponse(serializer.data)
 
+def summaries(request, pk=None):
+    '''Shows all Summaries or the details of a Summary if a pk is provided.'''
 
-def summaries(request):
-    '''Shows all summaries'''
+    if pk is not None:
+        try:
+            summary = Summary.objects.get(pk=pk)
+        except Summary.DoesNotExist:
+            return HttpResponse(status=404)
+        
+        if request.method == 'GET':
+            serializer = SummarySerializer(summary)
+            return JsonResponse(serializer.data)
 
     summaries = Summary.objects.all()
-    summary_serializer = SummarySerializer(summaries, many=True)
+    serializer = SummarySerializer(summaries, many=True)
 
-    return JsonResponse(summary_serializer.data, safe=False)
+    return JsonResponse(serializer.data, safe=False)
 
 @api_view(['POST'])
 def generate_bullet_points(request):
-    '''accepts text input and returns bullet points'''
-    print("request: ", request)
+    '''Accepts text input and returns a serialized BulletPoint object'''
+
     original_text = request.data
     bullet_point_data = get_bullet_point_data(original_text)
 
-    bp_serializer = BulletPointSerializer(data=bullet_point_data)
-    if bp_serializer.is_valid():
-        bp_serializer.save()
-        return Response(bp_serializer.data, status=status.HTTP_201_CREATED)
-    return JsonResponse(bp_serializer.data)
+    serializer = BulletPointSerializer(data=bullet_point_data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return JsonResponse(serializer.data)
 
 def bullet_points(request, pk=None):
-    '''shows all bullet points, or the details of one bullet point if a pk is provided'''
+    '''Shows all BulletPoints, or the details of one BulletPoint if a pk is provided'''
 
     if pk is not None:
-        print("pk: ", pk)
         try:
             bullet_point = BulletPoint.objects.get(pk=pk)
         except BulletPoint.DoesNotExist:
@@ -69,5 +67,6 @@ def bullet_points(request, pk=None):
         return JsonResponse(serializer.data)
     
     bullet_points = BulletPoint.objects.all()
-    bullet_point_serializer = BulletPointSerializer(bullet_points, many=True)
-    return JsonResponse(bullet_point_serializer.data, safe=False)
+    serializer = BulletPointSerializer(bullet_points, many=True)
+
+    return JsonResponse(serializer.data, safe=False)
