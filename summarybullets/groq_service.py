@@ -109,10 +109,10 @@ def get_bullet_point_data(text):
     if bp_name.find("**Name:** ") > -1:
         bp_name = bp_name.split("**Name:** ")[1]
 
-    summary_data = {
+    bp_data = {
         "name": bp_name,
         "original_text": text,
         "bullet_points": bp_text,
     }
 
-    return summary_data
+    return bp_data

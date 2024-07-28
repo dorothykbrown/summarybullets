@@ -1,14 +1,17 @@
 from django.http import JsonResponse, HttpResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from .models import BulletPoint, Summary
 from .serializers import BulletPointSerializer, SummarySerializer
 from .groq_service import get_bullet_point_data, get_text_summary_data
-from rest_framework.renderers import JSONRenderer
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 @api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def generate_summary(request):
     '''Accepts text input and returns serialized summary object'''
 
@@ -42,6 +45,8 @@ def summaries(request, pk=None):
     return JsonResponse(serializer.data, safe=False)
 
 @api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def generate_bullet_points(request):
     '''Accepts text input and returns a serialized BulletPoint object'''
 
@@ -49,6 +54,7 @@ def generate_bullet_points(request):
     bullet_point_data = get_bullet_point_data(original_text)
 
     serializer = BulletPointSerializer(data=bullet_point_data)
+    
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
