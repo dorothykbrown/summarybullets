@@ -1,0 +1,4 @@
+groq
+djangorestframework
+django-environ
+django
