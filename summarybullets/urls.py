@@ -22,5 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('generate-summary/', views.generate_summary),
     path('summaries/', views.summaries),
-    path('summaries/<int:pk>/', views.summary_detail)
+    path('summaries/<int:pk>/', views.summary_detail),
+    path('generate-bullet-points/', views.generate_bullet_points),
+    path('bullet-points/', views.bullet_points),
+    path('bullet-points/<int:pk>', views.bullet_points),
 ]
